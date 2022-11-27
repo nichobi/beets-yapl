@@ -18,7 +18,7 @@ class Yapl(BeetsPlugin):
         with open(output_file, 'w') as f:
             f.write("#EXTM3U\n")
             if "name" in playlist:
-                f.write(f"#PLAYLIST {playlist['name']}\n")
+                f.write(f"#PLAYLIST:{playlist['name']}\n")
             for i in items:
                 f.write(f"#EXTINF:{round(i.get('length'))}, {i.get('artist')} - {i.get('title')}\n")
                 path = i.get('path').decode()
@@ -36,7 +36,7 @@ class Yapl(BeetsPlugin):
                 playlist = yaml.safe_load(file)
                 items = []
                 for song in playlist['playlist']:
-                    query = [":".join([k, str(v)]) for k, v in song.items()]
+                    query = [f"{k}:{str(v)}" for k, v in song.items()]
                     results = lib.items(query)
                     match len(results):
                         case 1: items.append(results[0])
