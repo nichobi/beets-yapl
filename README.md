@@ -32,6 +32,8 @@ which will be compiled into an m3u playlist looking something like:
 
 Getting Started
 ---------------
+Install the plugin. So far it is only published on the AUR as [beets-yapl-git](https://aur.archlinux.org/packages/beets-yapl-git). Pip installation will arrive once I've had time to look into publishing on PyPI.
+
 [Enable the plugin](https://beets.readthedocs.io/en/latest/plugins/index.html#using-plugins) by adding it to your plugin option in the beets configuration and configure the plugin.
 ```yaml
 plugins:
