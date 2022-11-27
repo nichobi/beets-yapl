@@ -12,6 +12,7 @@ class Yapl(BeetsPlugin):
         return [compile_command]
 
     def write_m3u(self, filename, playlist, items):
+        print(f"Writing {filename}")
         relative = self.config['relative'].get(bool)
         output_path = Path(self.config['output_path'].as_filename())
         output_file = output_path / filename
@@ -32,6 +33,7 @@ class Yapl(BeetsPlugin):
 
         yaml_files = [f for f in os.listdir(input_path) if f.endswith('.yaml') or f.endswith('.yapl')]
         for yaml_file in yaml_files:
+            print(f"Parsing {yaml_file}")
             with open(input_path / yaml_file, 'r') as file:
                 playlist = yaml.safe_load(file)
                 items = []
