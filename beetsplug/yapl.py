@@ -20,7 +20,7 @@ class Yapl(BeetsPlugin):
             if "name" in playlist:
                 f.write(f"#PLAYLIST {playlist['name']}\n")
             for i in items:
-                f.write(f"#EXTINF: {round(i.get('length'))}, {i.get('artist')} - {i.get('title')}\n")
+                f.write(f"#EXTINF:{round(i.get('length'))}, {i.get('artist')} - {i.get('title')}\n")
                 path = i.get('path').decode()
                 if relative:
                     path = relpath(path, output_path)
