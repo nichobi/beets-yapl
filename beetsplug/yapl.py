@@ -37,8 +37,8 @@ class Yapl(BeetsPlugin):
             with open(input_path / yaml_file, 'r') as file:
                 playlist = yaml.safe_load(file)
                 items = []
-                for song in playlist['playlist']:
-                    query = [f"{k}:{str(v)}" for k, v in song.items()]
+                for track in playlist['tracks']:
+                    query = [f"{k}:{str(v)}" for k, v in track.items()]
                     results = lib.items(query)
                     match len(results):
                         case 1: items.append(results[0])

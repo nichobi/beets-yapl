@@ -8,7 +8,7 @@ M3U playlists are inherently fragile, breaking at the slightest change in a file
 A playlist can be written as:
 ```yaml
 name: Christmas
-playlist:
+tracks:
   - artist: Withered Hand
     title: Real Snow
     singleton: true
