@@ -37,7 +37,13 @@ class Yapl(BeetsPlugin):
             with open(input_path / yaml_file, 'r') as file:
                 playlist = yaml.safe_load(file)
                 items = []
-                for track in playlist['tracks']:
+                # Deprecated 'playlist' field
+                if 'playlist' in playlist and not 'tracks' in playlist:
+                    print("Deprecation warning: 'playlist' field in yapl file renamed to 'tracks'")
+                    tracks = playlist['playlist']
+                else:
+                    tracks = playlist['tracks']
+                for track in tracks:
                     query = [f"{k}:{str(v)}" for k, v in track.items()]
                     results = lib.items(query)
                     match len(results):
