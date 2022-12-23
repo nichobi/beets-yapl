@@ -46,8 +46,8 @@ yapl:
   relative: true
 ```
 
-`input_path: path` decides what directory yapl will search for yaml files.
-`output_path: path` decides where to output the compiled m3u files. Can be the same as input_path.
+`input_path: path` decides what directory yapl will search for yaml files.  
+`output_path: path` decides where to output the compiled m3u files. Can be the same as input_path.  
 `relative: bool` controls whether to use absolute or relative filepaths in the outputted M3U files.
 
 Once configured, run `beet yapl` to compile all the playlists. Warnings will be issued for any ambiguous or resultless queries and these tracks will be left out of the output.
