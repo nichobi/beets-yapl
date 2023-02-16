@@ -1,5 +1,9 @@
-beets-yapl
-==================
+# beets-yapl
+
+<a href="https://aur.archlinux.org/packages/beets-yapl-git" alt="AUR package">
+    <img src="https://img.shields.io/aur/version/beets-yapl-git" /></a>
+<a href="https://pypi.org/project/beets-yapl/" alt="PyPI package">
+    <img src="https://img.shields.io/pypi/v/beets-yapl" /></a>
 
 beets plugin to parse a yaml playlist format and compile it into the near universally supported M3U format.
 
@@ -33,9 +37,15 @@ which will be compiled into an M3U playlist looking something like:
 ../クレイジーケンバンド/Non-Album/クリスマスなんて、大嫌い!!なんちゃって.m4a
 ```
 
-Getting Started
----------------
-Install the plugin. So far it is only published on the AUR as [beets-yapl-git](https://aur.archlinux.org/packages/beets-yapl-git). Pip installation will arrive once I've had time to look into publishing on PyPI.
+## Getting Started
+
+#### Installation
+
+To install via pip: Run `pip install beets-yapl`.
+
+If you're on an Arch-based distro, you can install it from the AUR as [beets-yapl-git](https://aur.archlinux.org/packages/beets-yapl-git). 
+
+#### Configuration
 
 [Enable the plugin](https://beets.readthedocs.io/en/latest/plugins/index.html#using-plugins) by adding it to your plugin option in the beets configuration and configure the plugin.
 ```yaml
@@ -49,11 +59,13 @@ yapl:
   relative: true
 ```
 
-`input_path: path` decides what directory yapl will search for yaml files.  
+`input_path: path` decides what directory yapl will search for yapl files.  
 `output_path: path` decides where to output the compiled m3u files. Can be the same as input_path.  
 `relative: bool` controls whether to use absolute or relative filepaths in the outputted M3U files.
 
-Once configured, run `beet yapl` to compile all the playlists. Warnings will be issued for any ambiguous or resultless queries and these tracks will be left out of the output.
+#### Run
+
+Once configured, run `beet yapl` to compile all the playlists in your `input_path` directory. Warnings will be issued for any ambiguous or resultless queries and these tracks will be left out of the output.
 
 ```
 $ beet yapl
