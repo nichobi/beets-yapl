@@ -43,7 +43,7 @@ which will be compiled into an M3U playlist looking something like:
 
 To install via pip: Run `pip install beets-yapl`.
 
-If you're on an Arch-based distro, you can install it from the AUR as [beets-yapl-git](https://aur.archlinux.org/packages/beets-yapl-git). 
+If you're on an Arch-based distro, you can install it from the AUR as [beets-yapl-git](https://aur.archlinux.org/packages/beets-yapl-git).
 
 #### Configuration
 
@@ -54,13 +54,13 @@ plugins:
 - yapl
 
 yapl:
-  input_path: /home/nichobi/Music/playlists/
-  output_path: /home/nichobi/Music/playlists/
+  input_path: ~/Music/playlists/
+  output_path: ~/Music/playlists/
   relative: true
 ```
 
-`input_path: path` decides what directory yapl will search for yapl files.  
-`output_path: path` decides where to output the compiled m3u files. Can be the same as input_path.  
+`input_path: path` decides what directory yapl will search for yapl files.
+`output_path: path` decides where to output the compiled m3u files. Can be the same as input_path.
 `relative: bool` controls whether to use absolute or relative filepaths in the outputted M3U files.
 
 #### Run
