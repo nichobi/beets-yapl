@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name='beets-yapl',
-    version='0.1.0',
+    version='0.1.1',
     description='beets plugin to handle yaml playlists',
     long_description=open('README.md').read(),
     long_description_content_type='text/markdown',
