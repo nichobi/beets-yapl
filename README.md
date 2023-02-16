@@ -11,7 +11,6 @@ name: Christmas
 tracks:
   - artist: Withered Hand
     title: Real Snow
-    singleton: true
   - artist: Withered Hand
     title: It's a Wonderful Life
     album: Chrimble madness
