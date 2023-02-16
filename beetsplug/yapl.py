@@ -46,10 +46,11 @@ class Yapl(BeetsPlugin):
                 for track in tracks:
                     query = [f"{k}:{str(v)}" for k, v in track.items()]
                     results = lib.items(query)
-                    match len(results):
-                        case 1: items.append(results[0])
-                        case 0: print(f"No results for query: {query}")
-                        case _: print(f"Multiple results for query: {query}")
+                    # Replaced match with if, for python <3.10
+                    l = len(results)
+                    if   l == 1: items.append(results[0])
+                    elif l == 0: print(f"No results for query: {query}")
+                    else       : print(f"Multiple results for query: {query}")
                 output_file = Path(yaml_file).stem + ".m3u"
                 self.write_m3u(output_file, playlist, items)
 
