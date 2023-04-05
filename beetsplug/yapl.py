@@ -7,17 +7,19 @@ from pathlib import Path
 # csv imports
 import io
 import csv
+import m3u8
 
 
 class Yapl(BeetsPlugin):
     def commands(self):
         compile_command = Subcommand('yapl', help='compile yapl playlists')
         compile_command.func = self.compile
-        m3utoyapl_command = Subcommand('m3u2', help='convert m3u playlists to yapl')
-        m3utoyapl_command.func = self.m3u_to_yapl
+        #m3utoyapl_command = Subcommand('m3u2', help='convert m3u playlists to yapl')
+        #m3utoyapl_command.func = self.m3u_to_yapl
         csvtoyapl_command = Subcommand('csv', help='convert csv to yapl')
         csvtoyapl_command.func = self.csv_to_yapl
-        return [csvtoyaplcommand, compile_command, m3utoyapl_command]
+        return [csvtoyaplcommand, compile_command]
+        #return [csvtoyaplcommand, compile_command, m3utoyapl_command]
 
     def write_m3u(self, filename, playlist, items):
         print(f"Writing {filename}")
@@ -78,6 +80,7 @@ class Yapl(BeetsPlugin):
             print(f"Parsing {csv_file}")
             with io.open(input_path / csv_file, 'r', encoding='utf8') as file:
                 playlist = csv.DictReader(file)
+                playlist_fields = playlist.fieldnames
                 output_name = Path(csv_file).stem
                 output_file = output_name + ".yaml"
                 # Defining the dictionary and list that will go inside the dictionary
@@ -86,25 +89,30 @@ class Yapl(BeetsPlugin):
                 # Adding the high level parts of the dict thing
                 data["name"] = output_name
                 
-                print(playlist.fieldnames)
+                print(playlist_fields)
                 
                 for row in playlist:
                     #pprint.pprint(row)
                     tempdict = dict()
+                    for field in playlist_fields:
+                        lowerfield = field.lower()
+                        if "path" not in lowerfield:
+                            tempdict[lowerfield] = row[field]
                     
                     # Putting values into the temporary dictionary
-                    tempdict["filename"] = row["Filename"]
-                    tempdict["title"] = row["Title"]
-                    tempdict["artist"] = row["Artist"]
-                    tempdict["album"] = row["Album"]
+                    #tempdict["filename"] = row["Filename"]
+                    #tempdict["title"] = row["Title"]
+                    #tempdict["artist"] = row["Artist"]
+                    #tempdict["album"] = row["Album"]
                     
                     datalist.append(tempdict)
                 
                 print("Export path: " + str(output_file))
                 data["tracks"] = datalist
-                self.write_yaml(self, output_file, data)
+                self.write_yapl(self, output_file, data)
         
     ## Take all m3u files located at the input path and create yaml representations for them                
+    
     def m3u_to_yapl (self, lib, opts, args):
         input_path = Path(self.config['m3u_input_path'].as_filename())
 
@@ -112,10 +120,12 @@ class Yapl(BeetsPlugin):
         for m3u_file in m3u_files:
             
             print(f"Parsing {m3u_file}")
-            with io.open(input_path / m3u_file, 'r', encoding='utf8') as file:
-                if (f.readline() = "#EXTM3U\n":
-                    for line in f:
-                        if 
+            playlist = m3u8.load(m3u_file)
+            print(playlist.segments)
+            #with io.open(input_path / m3u_file, 'r', encoding='utf8') as file:
+             #   if (f.readline() = "#EXTM3U\n":
+              #      for line in f:
+               #         if 
                     
                 
                 
@@ -144,4 +154,3 @@ class Yapl(BeetsPlugin):
                 print("Export path: " + str(output_file))
                 data["tracks"] = datalist
                 self.write_yaml(self, output_file, data)
-

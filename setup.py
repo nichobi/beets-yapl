@@ -18,6 +18,7 @@ setup(
 
     install_requires=[
         'beets>=1.4.7',
+        'py-m3u>=0.0.1',
     ],
 
     classifiers=[
