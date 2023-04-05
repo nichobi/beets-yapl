@@ -54,14 +54,16 @@ plugins:
 - yapl
 
 yapl:
-  input_path: ~/Music/playlists/
-  output_path: ~/Music/playlists/
+  yapl_path: ~/Music/playlists/
+  csv_path: ~/Music/playlists/
+  m3u_path: ~/Music/playlists/
   relative: true
 ```
 
-`input_path: path` decides what directory yapl will search for yapl files.
-`output_path: path` decides where to output the compiled m3u files. Can be the same as input_path.
-`relative: bool` controls whether to use absolute or relative filepaths in the outputted M3U files.
+- `yapl_path: path`: Decides what directory yapl will search for yapl files and where created yapl files will be placed. Can be the same as m3u_path and csv_path.
+- `csv_path: path`: Decides what directory yapl will search for csv files. Can be the same as m3u_path and csv_path.
+- `m3u_path: path`: Decides where to output the compiled m3u files or grab input m3u files. Can be the same as yapl_path and csv_path.
+- `relative: bool`: Controls whether to use absolute or relative filepaths in the outputted M3U files.
 
 #### Run
 
