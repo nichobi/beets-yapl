@@ -50,24 +50,28 @@ class Yapl(BeetsPlugin):
         for yaml_file in yaml_files:
             print(f"Parsing {yaml_file}")
             with open(input_path / yaml_file, 'r') as file:
-                playlist = yaml.safe_load(file)
-                items = []
-                # Deprecated 'playlist' field
-                if 'playlist' in playlist and not 'tracks' in playlist:
-                    print("Deprecation warning: 'playlist' field in yapl file renamed to 'tracks'")
-                    tracks = playlist['playlist']
-                else:
-                    tracks = playlist['tracks']
-                for track in tracks:
-                    query = [f"{k}:{str(v)}" for k, v in track.items()]
-                    results = lib.items(query)
-                    # Replaced match with if, for python <3.10
-                    l = len(results)
-                    if   l == 1: items.append(results[0])
-                    elif l == 0: print(f"No results for query: {query}")
-                    else       : print(f"Multiple results for query: {query}")
-                output_file = Path(yaml_file).stem + ".m3u"
-                self.write_m3u(output_file, playlist, items)
+                try:
+                    playlist = yaml.safe_load(file)
+                except:
+                    print("Unable to open file.")
+                else:        
+                    items = []
+                    # Deprecated 'playlist' field
+                    if 'playlist' in playlist and not 'tracks' in playlist:
+                        print("Deprecation warning: 'playlist' field in yapl file renamed to 'tracks'")
+                        tracks = playlist['playlist']
+                    else:
+                        tracks = playlist['tracks']
+                    for track in tracks:
+                        query = [f"{k}:{str(v)}" for k, v in track.items()]
+                        results = lib.items(query)
+                        # Replaced match with if, for python <3.10
+                        l = len(results)
+                        if   l == 1: items.append(results[0])
+                        elif l == 0: print(f"No results for query: {query}")
+                        else       : print(f"Multiple results for query: {query}")
+                    output_file = Path(yaml_file).stem + ".m3u"
+                    self.write_m3u(output_file, playlist, items)
                 
     ## Write out the data from csv_to_yaml out to .yaml files
     def write_yapl(self, filename, data):
@@ -115,7 +119,7 @@ class Yapl(BeetsPlugin):
     ## Take all m3u files located at the input path and create yaml representations for them                
     def get_m3u_paths (self, input_path):
         m3u_files = [f for f in os.listdir(input_path) if f.endswith('.m3u8')]
-        paths_list = list()
+        files_list = list()
         for m3u_file in m3u_files:
             fileinfo = dict()
             fileinfo["filename"] = Path(m3u_file).stem
@@ -123,22 +127,26 @@ class Yapl(BeetsPlugin):
             paths = list()
             parser = py_m3u.M3UParser()
             with io.open (input_path / m3u_file, 'r') as file:
-                audiofiles = parser.load(file)
-                for audiofile in audiofiles:
-                    #print("Path = " + audiofile.source)
-                    if not str(audiofile.source).endswith("#"):
-                        paths.append(audiofile.source)
-                fileinfo["paths"] = paths    
-            paths_list.append(fileinfo)
-        return paths_list
+                try:
+                    audiofiles = parser.load(file)
+                except:
+                    print("Unable to read file.")
+                else:
+                    for audiofile in audiofiles:
+                        #print("Path = " + audiofile.source)
+                        if not str(audiofile.source).endswith("#"):
+                            paths.append(audiofile.source)
+                    fileinfo["paths"] = paths    
+                    files_list.append(fileinfo)
+        return files_list
             
                     
                     
     def m3u_to_yapl_beets(self, lib, opts, args):
         input_path = Path(self.config['m3u_path'].as_filename())
         dataforyapl = dict()
-        paths_list = self.get_m3u_paths(input_path)
-        for file in paths_list:
+        file_list = self.get_m3u_paths(input_path)
+        for file in file_list:
             filename = file['filename']
             output_file = filename + ".yaml"
             paths = file['paths']
@@ -172,9 +180,9 @@ class Yapl(BeetsPlugin):
     def m3u_to_yapl_mp3tag(self, lib, opts, args):
         input_path = Path(self.config['m3u_path'].as_filename())
         dataforyapl = dict()
-        paths_list = self.get_m3u_paths(input_path) 
+        file_list = self.get_m3u_paths(input_path) 
         # For each file in paths_list, the filename and paths are grabbed
-        for file in paths_list:
+        for file in file_list:
             failcount = 0
             filename = file['filename']
             output_file = filename + ".yaml"
@@ -191,21 +199,39 @@ class Yapl(BeetsPlugin):
                     print(f"No file found at the given path: {path}")
                     failcount = failcount + 1
                 else:                    
-                    #print(str(type(metadata)))
-                    #print(metadata.album)
-                    songdata["album"] = metadata.album
-                    songdata["artist"] = metadata.artist
-                    songdata["genre"] = metadata.genre
-                    songdata["length"] = metadata.duration
-                    songdata["filesize"] = metadata.filesize
-                    songdata["title"] = metadata.title
-                    songdata["track"] = metadata.track
-                    songdata["year"] = metadata.year
-                    #for grabfield in fieldstograb:
-                        #if grabfield == "length":
-                            #songdata[grabfield] = metadata.duration
+                    #songdata["album"] = metadata.album
+                    #songdata["artist"] = metadata.artist
+                    #songdata["genre"] = metadata.genre
+                    #songdata["length"] = metadata.duration
+                    #songdata["filesize"] = metadata.filesize
+                    #songdata["title"] = metadata.title
+                    #if not str(type(metadata.track)) == "<class 'NoneType'>":
+                        #if "/" in metadata.track:
+                            #print("Original Track Value: " + metadata.track)
+                            #trackval = str(metadata.track).split("/")
+                            #print("New Track Value: " + trackval[0])
+                            #songdata["track"] = trackval[0]
                         #else:
-                            #songdata[grabfield] = metadata.grabfield
+                            #songdata["track"] = metadata.track
+                    #songdata["year"] = metadata.year
+                    #print(type(getattr(metadata,"duration")))
+                    #TODO: Figure out why line 222 is causing an error, and why it apparantly references an ID3 object when there is a string cast on it
+                    for grabfield in fieldstograb:
+                        #print(type(getattr(metadata,grabfield)))
+                        if not str(type(getattr(metadata, grabfield))) == "<class 'NoneType'>":
+                            if grabfield == "length":
+                                songdata[grabfield] = metadata.duration
+                            elif grabfield == "track":
+                                #if not str(type(metadata.track)) == "<class 'NoneType'>":
+                                if "/" in metadata.track:
+                                    #print("Original Track Value: " + metadata.track)
+                                    trackval = str(metadata.track).split("/")
+                                    #print("New Track Value: " + trackval[0])
+                                    songdata["track"] = trackval[0]
+                                else:
+                                    songdata["track"] = metadata.track
+                            else:
+                                songdata[grabfield] = getattr(metadata, grabfield)
                     songlist.append(songdata)
             dataforyapl["tracks"] = songlist
             print(f"Failcount for {filename}: {failcount}")
