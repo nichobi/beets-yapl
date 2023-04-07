@@ -7,18 +7,18 @@ from pathlib import Path
 # csv imports
 import io
 import csv
-import m3u8
+import py_m3u
 
 
 class Yapl:   
     
     ## Write out the data from csv_to_yaml out to .yaml files
-    def write_yapl(self, filename, data):
+    #def write_yapl(self, filename, data):
         #output_path = Path(self.config['yaml_output_path'].as_filename())
-        output_path = Path("./test/csv_output/" + filename)
+        #output_path = Path("./test/csv_output/" + filename)
         
-        with io.open(output_path, 'w', encoding='utf8') as outfile:
-            yaml.dump(data, outfile, default_flow_style=False, allow_unicode=True)
+        #with io.open(output_path, 'w', encoding='utf8') as outfile:
+            #yaml.dump(data, outfile, default_flow_style=False, allow_unicode=True)
     
     ## Take all csv files located at the input path and create yaml representations for them            
     def csv_to_yapl(self):
@@ -61,27 +61,44 @@ class Yapl:
                 
                 print("Export path: " + str(output_file))
                 data["tracks"] = datalist
-                self.write_yapl(self, output_file, data)
+                #self.write_yapl(self, output_file, data)
+                output_path = Path("./test/csv_output/" + output_file)
+                
+                with io.open(output_path, 'w', encoding='utf8') as outfile:
+                    yaml.dump(data, outfile, default_flow_style=False, allow_unicode=True)
                 
                 
                 
-    def m3u_to_yapl (self):
+    def m3u_to_yapl (lib, opts, args):
         input_path = Path('./test/m3u_input')
 
         m3u_files = [f for f in os.listdir(input_path) if f.endswith('.m3u8')]
         for m3u_file in m3u_files:
             print(f"Parsing {m3u_file}")
-            m3upath = str(Path(input_path) / Path(m3u_file)) 
-            print(m3upath)
-            playlist = m3u8.load(m3upath)
-            print(playlist.files)
-            segmentlist = playlist.segments
-            print(segmentlist.__str__())
-            print(segmentlist.uri)
-            #for segment in segmentlist:
-            #    print(segment.uri)
-            #    print(segment.base_uri)
+            #m3upath = str(Path(input_path) / Path(m3u_file)) 
+            paths = list()
+            parser = py_m3u.M3UParser()
+            querybase = "path:"
+            with io.open (input_path / m3u_file, 'r') as file:
+                audiofiles = parser.load(file)
+                for audiofile in audiofiles:
+                    #print(audiofile.source)
+                    paths.append(audiofile.source)
+                    #item = library.Item.read()
+            for path in paths:
+                querystr = querybase + path
+                pathquery = queryparse.query_from_strings(queries.AndQuery, library.Item, {}, querystr)
+                print("Pathquery type: " + str(type(pathquery)))
+                results = library.Library.items(querystr)   
+                l = len(results)
+                if   l == 1: items.append(results[0])
+                elif l == 0: print(f"No results for query: {query}")
+                else       : print(f"Multiple results for query: {query}")
+                    
+                    
+
+
 
 beans = Yapl
 beans.csv_to_yapl(beans)
-beans.m3u_to_yapl(beans)
+#beans.m3u_to_yapl(beans)
