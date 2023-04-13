@@ -67,7 +67,11 @@ yapl:
 
 #### Run
 
-Once configured, run `beet yapl` to compile all the playlists in your `input_path` directory. Warnings will be issued for any ambiguous or resultless queries and these tracks will be left out of the output.
+Once configured, run `beet yapl` to compile all the playlists in your `yapl_path` directory. Warnings will be issued for any ambiguous or resultless queries and these tracks will be left out of the output.
+
+You can also run `beet m3ub` or `beet m3ut` to compile yapl files from the m3u8 playlist files within your `m3u_path` directory. `beet m3ub` will use the beets database to grab metadata about your songs, and `beet m3ut` will use the file metadata on the songs. Warnings will be issued for any paths within the m3u8 file that aren't reachable, and after each file is processed a failure count will be outputted.
+
+To take data from csv files and turn it into corresponding yapl files, run `beet csv`. The input csv files will be grabbed from your `csv_path` directory and the output yapl files will be placed in your `yapl_path` directory
 
 ```
 $ beet yapl
