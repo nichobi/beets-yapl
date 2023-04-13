@@ -49,7 +49,7 @@ class Yapl(BeetsPlugin):
         yaml_files = [f for f in os.listdir(input_path) if f.endswith('.yaml') or f.endswith('.yapl')]
         for yaml_file in yaml_files:
             print(f"Parsing {yaml_file}")
-            with open(input_path / yaml_file, 'r') as file:
+            with open(input_path / yaml_file, 'r', encoding='utf-8') as file:
                 try:
                     playlist = yaml.safe_load(file)
                 except:
@@ -126,7 +126,7 @@ class Yapl(BeetsPlugin):
             print(f"Parsing {m3u_file}")
             paths = list()
             parser = py_m3u.M3UParser()
-            with io.open (input_path / m3u_file, 'r') as file:
+            with io.open (input_path / m3u_file, 'r', encoding='utf-8') as file:
                 try:
                     audiofiles = parser.load(file)
                 except:
@@ -190,7 +190,7 @@ class Yapl(BeetsPlugin):
             songlist = list()
             foundsongs = []
             dataforyapl["name"] = filename
-            # For each path in paths, we are going to grab the metadata, and add the items into the 
+            # For each path in paths, we are going to grab the metadata
             for path in paths:
                 songdata = dict()
                 try:
@@ -199,34 +199,14 @@ class Yapl(BeetsPlugin):
                     print(f"No file found at the given path: {path}")
                     failcount = failcount + 1
                 else:                    
-                    #songdata["album"] = metadata.album
-                    #songdata["artist"] = metadata.artist
-                    #songdata["genre"] = metadata.genre
-                    #songdata["length"] = metadata.duration
-                    #songdata["filesize"] = metadata.filesize
-                    #songdata["title"] = metadata.title
-                    #if not str(type(metadata.track)) == "<class 'NoneType'>":
-                        #if "/" in metadata.track:
-                            #print("Original Track Value: " + metadata.track)
-                            #trackval = str(metadata.track).split("/")
-                            #print("New Track Value: " + trackval[0])
-                            #songdata["track"] = trackval[0]
-                        #else:
-                            #songdata["track"] = metadata.track
-                    #songdata["year"] = metadata.year
-                    #print(type(getattr(metadata,"duration")))
-                    #TODO: Figure out why line 222 is causing an error, and why it apparantly references an ID3 object when there is a string cast on it
-                    for grabfield in fieldstograb:
-                        #print(type(getattr(metadata,grabfield)))
-                        if not str(type(getattr(metadata, grabfield))) == "<class 'NoneType'>":
-                            if grabfield == "length":
-                                songdata[grabfield] = metadata.duration
-                            elif grabfield == "track":
-                                #if not str(type(metadata.track)) == "<class 'NoneType'>":
+                    mp3fields = fieldstograb.copy()
+                    mp3fields.remove("length")
+                    mp3fields.append("duration")
+                    for grabfield in mp3fields:
+                        if not str(type(getattr(metadata, grabfield))) == "<class 'NoneType'>" and not str(getattr(metadata, grabfield)) == '':
+                            if grabfield == "track":
                                 if "/" in metadata.track:
-                                    #print("Original Track Value: " + metadata.track)
                                     trackval = str(metadata.track).split("/")
-                                    #print("New Track Value: " + trackval[0])
                                     songdata["track"] = trackval[0]
                                 else:
                                     songdata["track"] = metadata.track
