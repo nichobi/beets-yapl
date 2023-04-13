@@ -54,18 +54,24 @@ plugins:
 - yapl
 
 yapl:
-  input_path: ~/Music/playlists/
-  output_path: ~/Music/playlists/
+  yapl_path: ~/Music/playlists/
+  csv_path: ~/Music/playlists/
+  m3u_path: ~/Music/playlists/
   relative: true
 ```
 
-`input_path: path` decides what directory yapl will search for yapl files.
-`output_path: path` decides where to output the compiled m3u files. Can be the same as input_path.
-`relative: bool` controls whether to use absolute or relative filepaths in the outputted M3U files.
+- `yapl_path: path`: Decides what directory yapl will search for yapl files and where created yapl files will be placed. Can be the same as m3u_path and csv_path.
+- `csv_path: path`: Decides what directory yapl will search for csv files. Can be the same as m3u_path and csv_path.
+- `m3u_path: path`: Decides where to output the compiled m3u files or grab input m3u files. Can be the same as yapl_path and csv_path.
+- `relative: bool`: Controls whether to use absolute or relative filepaths in the outputted M3U files.
 
 #### Run
 
-Once configured, run `beet yapl` to compile all the playlists in your `input_path` directory. Warnings will be issued for any ambiguous or resultless queries and these tracks will be left out of the output.
+Once configured, run `beet yapl` to compile all the playlists in your `yapl_path` directory. Warnings will be issued for any ambiguous or resultless queries and these tracks will be left out of the output.
+
+You can also run `beet m3ub` or `beet m3ut` to compile yapl files from the m3u8 playlist files within your `m3u_path` directory. `beet m3ub` will use the beets database to grab metadata about your songs, and `beet m3ut` will use the file metadata on the songs. Warnings will be issued for any paths within the m3u8 file that aren't reachable, and after each file is processed a failure count will be outputted.
+
+To take data from csv files and turn it into corresponding yapl files, run `beet csv`. The input csv files will be grabbed from your `csv_path` directory and the output yapl files will be placed in your `yapl_path` directory
 
 ```
 $ beet yapl
